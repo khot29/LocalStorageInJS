@@ -12,7 +12,7 @@
     <div>
         <form id="book-form">
             <div>
-                <input id ='Image'type="file" onchange="SetImage(event)"/>
+                <input id ='Image'type="file" />
             </div>
             <div>
                 <label for="author">Author</label>
@@ -54,6 +54,8 @@
         </tbody>
     </table>
 
+
+    <!-- -------------------------------------------------- -->
     <script>
         let ArrayofObject = [];
         let trs = document.querySelector("#book-list").getElementsByTagName('tr');
@@ -81,16 +83,31 @@
             let newObject = {
                 Author: author,
                 Isbn: isbn,
-                image: ImageURL
+                image: ImageBlobData
             }
             ArrayofObject.push(newObject);
             addtoUI(newObject);
             localStorage.setItem('ArrayofObject', JSON.stringify(ArrayofObject));
         });
 
-        function SetImage(e) {
-  let file = e.target.files[0];
-  ImageURL = URL.createObjectURL(file);
+        var fileTag = document.getElementById("Image");
+
+        fileTag.addEventListener("change", function() {
+  changeImage(this);
+});
+
+function changeImage(input) {
+  var reader;
+
+  if (input.files && input.files[0]) {
+    reader = new FileReader();
+
+    reader.onload = function(e) {
+        ImageBlobData = e.target.result;
+    }
+
+    reader.readAsDataURL(input.files[0]);
+  }
 }
 
         function addtoUI(object) {
